@@ -31,7 +31,7 @@ public class GameOverManager : MonoBehaviour
 
     private void GameOver()
     {
-        SceneManager.LoadScene("GameOverMenu");
+        SceneManager.LoadScene("GameOver");
     }
 
     void Start()

@@ -17,6 +17,8 @@ public class MainMenuManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        PlayerPrefs.SetInt("coins", 0);
+        PlayerPrefs.SetInt("level", 1);
         btnPlay.onClick.AddListener(LoadLevel1);
     }
 

@@ -24,9 +24,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _player;
     [SerializeField] private Slider _healthBar;
     private bool win = false;
-    private int level;
     private int playerPrefsLevel;
-    
+    private int coinCount = 0;
+    private int coinCountL = 0;
     
     private void Start()
     {
@@ -44,21 +44,21 @@ public class GameManager : MonoBehaviour
 
         else
         {
-            level = 1;
             playerPrefsLevel = PlayerPrefs.GetInt("level");
-            if (PlayerPrefs.GetInt("level") == 1)
+            if (playerPrefsLevel == 1) 
             {
-                
+                coinCountL = 0;
             }
-            else if (PlayerPrefs.GetInt("level") == 2)
-
+            else if (playerPrefsLevel == 2)
             {
-                
+                coinCountL = 0;
+                coinCount = PlayerPrefs.GetInt("coins");
+                _txtCoins.text = "$ " + (coinCountL + coinCount) * 10;
             }
         }
     }
 
-    private int coinCount = 0;
+    
     
     public void ReiniciarNivel()
     {
@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver() 
     {
-        if ((level == 1) && win)
+        if ((playerPrefsLevel == 1) && win)
         {
             PlayerPrefs.SetInt("level",2);
             PlayerPrefs.Save();
@@ -81,29 +81,50 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene("GameOver");
         }
         
+        
+        
     }
     public void IncrementarMonedas()
     {
-        if (coinCount < 2)
+        if (playerPrefsLevel == 1 )
         {
-            coinCount++;
-            // Debug.Log($"You have ${coinCount*10}");
-            _txtCoins.text = "$ " + coinCount * 10;
-            _spawnCoin.SpawnNewCoin();
-        }
-        else
-        {   win = true;
-            if (level == 1)
+            if (coinCountL < 2)
             {
-                EndLevel("Congratulations. Go to Level 2");
+                coinCountL++;
+                    // Debug.Log($"You have ${coinCount*10}");
+                _txtCoins.text = "$ " + (coinCountL + coinCount) * 10;
+                _spawnCoin.SpawnNewCoin();
             }
-            else if (level == 2)
+
+            else
+            {
+                coinCount = coinCountL;
+                PlayerPrefs.SetInt("coins", coinCount);
+                PlayerPrefs.Save();
+                EndLevel("Congratulations. Go to Level 2");
+                win = true;
+            }
+                
+                
+        }
+        else if (playerPrefsLevel == 2) 
+        {
+            if (coinCountL < 4)
+            {
+                coinCountL++;
+                // Debug.Log($"You have ${coinCount*10}");
+                _txtCoins.text = "$ " + (coinCountL + coinCount) * 10;
+                _spawnCoin.SpawnNewCoin();
+            }
+            else
             {
                 EndLevel("You Win!");
             }
-            
-            
+               
         }
+            
+            
+        
         
     }
 
@@ -129,7 +150,7 @@ public class GameManager : MonoBehaviour
             // die
             Destroy(_player);
             //EndLevel("you die! Game Over");
-            SceneManager.LoadScene("GameOverMenu");
+            SceneManager.LoadScene("GameOver");
         }   
     }
 }
